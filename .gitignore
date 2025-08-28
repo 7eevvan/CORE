@@ -8,3 +8,6 @@ build/
 
 # Python cache files
 __pycache__/
+
+# DS store
+.DS_Store
