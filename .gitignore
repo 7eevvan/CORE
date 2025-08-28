@@ -1,0 +1,10 @@
+# C++ files
+*.cpp
+*.so
+
+
+# Build directory
+build/
+
+# Python cache files
+__pycache__/
