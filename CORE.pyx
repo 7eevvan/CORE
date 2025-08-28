@@ -1,4 +1,4 @@
-from graph_subgraph_fast cimport GraphSubgraph
+from graph_subgraph cimport GraphSubgraph
 from libcpp.vector cimport vector
 from libc.stdlib cimport rand, srand
 from libc.math cimport ceil

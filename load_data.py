@@ -66,10 +66,15 @@ def read_csv_graph(file_path):
     return adj_dict
 
 def remap_to_dense(adj_dict):
+    """Convert adjacency dictionary to use dense sequential node IDs [0, 1, ..., n-1]."""
+    # Create sequential node ID mapping
     nodes = sorted(adj_dict.keys())
     id_map = {old_id: new_id for new_id, old_id in enumerate(nodes)}
     reverse_map = {new_id: old_id for old_id, new_id in id_map.items()}
+    
+    # Remap adjacency dict with dense IDs
     remapped = {}
     for node, neighbors in adj_dict.items():
         remapped[id_map[node]] = [id_map[neighbor] for neighbor in neighbors]
+    
     return remapped, id_map, reverse_map

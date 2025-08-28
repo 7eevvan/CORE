@@ -3,8 +3,8 @@ from Cython.Build import cythonize
 
 extensions = [
     Extension(
-        "graph_subgraph_fast",
-        ["graph_subgraph_fast.pyx"],
+        "graph_subgraph",
+        ["graph_subgraph.pyx"],
         language="c++",
         extra_compile_args=["-std=c++11", "-O3"],
     ),
@@ -14,7 +14,6 @@ extensions = [
         language="c++",
         extra_compile_args=["-std=c++11", "-O3"],
     ),
-
 ]
 
 setup(
