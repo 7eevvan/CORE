@@ -75,3 +75,66 @@ def CORE(graph, gamma, max_iterations, max_no_improve, explore_freq):
 
     return best_S
 ```
+The region exploration procedure builds a connected region of nodes by first selecting a random node that is not currently in the solution, then iteratively adding neighboring nodes to form a connected subgraph. Once the region is constructed, all nodes in the region are added to the current solution. To maintain the solution size, the algorithm then removes the worst-performing nodes from the enlarged solution, equal to the number of nodes that were added. This approach allows the algorithm to explore promising connected regions that might not be individually attractive but could collectively improve the solution quality.
+
+```python
+def region_exploration(graph, S, region_size):
+    region = {}
+
+    for i = 1 to region_size:
+        if i == 1:
+            node = random_node_excluding(graph, S)
+        else:
+            node = select_neighbor_node(region, S)
+        region = region ∪ {node}
+
+    for node in region:
+        S = S ∪ {node}
+        
+    for i = 1 to region_size:
+        worst_node = select_worst_node(S)
+        S = S \ {worst_node}
+
+    return S
+```
+
+## CORE Animated
+
+In the animation below, the algorithm can be seen working on the graph with two fully connected cores that are loosely connected. The goal is to find the largest quasi-clique with a density of at least 0.5. To make the graph in the animation less messy, the edges are not shown unless they are part of the solution.
+
+![CORE Algorithm Animation](static/quasi_clique_re2.gif)
+
+The algorithm initially finds the central core but only considers the blue satellite nodes for expansion or local search swaps, since they have a stronger connection to the solution than the green nodes. However, after every five swaps, a new region is explored. This enables the algorithm to discover the green subcore region, which leads to the optimal subgraph with a size of 18 nodes and a density of 0.523.
+
+## Results
+
+The CORE algorithm was tested on the FlyWire Max Quasi-Cliques Challenge graph. To show the effectiveness of the Region Exploration, the CORE algorithm is compared to a version of itself which does not use this exploration mechanism. We refer to this as local search in the results table below.
+
+Both algorithms were implemented in Python/Cython and evaluated using three independent runs per density level with seeds 1, 2, and 3 on a MacBook M1. The density levels ranged from γ = 1.0 down to γ = 1/2048. For CORE, the region exploration was configured with a minimum region size of 10 nodes and a maximum of 200 nodes, triggered every 10 iterations without improvement. Only for the quasi-clique search where γ = 1/1024, we used a max region size of 50, as this greatly improved convergence speed.
+
+The best solution size achieved across the three runs is reported for each density level. When results varied between runs, the average solution size is shown in parentheses. The runtime shows the average time until the best solution was found.
+
+| γ       | **Local** |         | **CORE** |         |
+|---------|-----------|---------|----------|---------|
+|         | Size      | Time    | Size     | Time    |
+| 1       | **40**    | 0.12    | **40**   | **0.04** |
+| 1/2     | **175**   | 1.36    | **175**  | **0.13** |
+| 1/4     | 369 (353) | 17.13   | **369**  | **0.19** |
+| 1/8     | **723**   | **0.16** | **723**  | 0.49    |
+| 1/16    | **1541**  | 0.67    | **1541** | **0.35** |
+| 1/32    | **3109**  | 42.29   | **3109** | **3.09** |
+| 1/64    | **6207**  | **5.43** | **6207** | 19.50   |
+| 1/128   | 11755 (11751) | 66.98 | **11757** | **9.14** |
+| 1/256   | 20841 (20802) | 99.78 | **20841** | **8.19** |
+| 1/512   | 35827     | 2.91    | **35828** | **17.16** |
+| 1/1024  | 60425 (60424) | 81.80 | **60430** | **6.93** |
+| 1/2048  | **97272** | 10.14   | **97272** | **9.84** |
+
+Local search finds good solutions for many of the cliques within reasonable time. However, for some of the quasi-cliques, local search fails to find the best solution consistently. We can see that the CORE algorithm does perform better in terms of solution quality and convergence speed. For γ=1/4, the CORE algorithm is able to find the best solution almost instantly while the local search finds the optimal solution only in one of the three runs. For γ=1/128, 1/512, 1/1024, the CORE algorithm is consistently able to find a better solution than local search while the running times stay under 20 seconds. This demonstrates that the CORE algorithm is able to effectively find high-quality solutions without needing extensive compute.
+
+## Final Remarks
+
+The code includes support for tabu search, though in practice, I found that disabling tabu often performed just as well or even better. To keep the algorithm simple, the version presented here does not use tabu search. This article doesn't cover all implementation details like tiebreaking rules and neighbor sampling mechanisms, but these can be found in the code repository.
+
+The local search algorithm without Region Exploration is already quite powerful and fast, and when tabu search is enabled, it performs comparably to state-of-the-art methods such as NuQClq and TSQC while being algorithmically simpler.
+
