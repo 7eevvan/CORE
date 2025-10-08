@@ -138,3 +138,7 @@ The code includes support for tabu search, though in practice, I found that disa
 
 The local search algorithm without Region Exploration is already quite powerful and fast, and when tabu search is enabled, it performs comparably to state-of-the-art methods such as NuQClq and TSQC while being algorithmically simpler.
 
+
+## Recent Updates
+
+**October 9, 2025**: Added `fixed_k` parameter to the CORE algorithm. When set to a non-zero value, the algorithm optimizes the number of edges for a clique with a fixed number of nodes instead of expanding the solution size.
