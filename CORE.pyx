@@ -38,21 +38,28 @@ cdef vector[int] region_exploration(GraphSubgraph region_graph, GraphSubgraph ma
     return result
 
 
-cpdef tuple CORE(dict adj_dict, double gamma, int no_improve_limit, int max_iterations, int region_freq, int min_region_size, int max_region_size, int seed):
-    """Find maximum quasi-clique using local search with region based exploration."""
+cpdef tuple CORE(dict adj_dict, double gamma, int no_improve_limit, int max_iterations, int region_freq, int min_region_size, int max_region_size, int seed, int fixed_k=0):
+    """Find maximum quasi-clique using local search with region based exploration"""
     cdef list best_solution = []
     cdef int global_iter = 0
-    cdef int k = 1
+    cdef int k
     cdef int no_improve_iter
     cdef int node_to_add, node_to_remove
     cdef int required_edges
-    cdef int best_edges_for_k
+    cdef int restart_best_edges
+    cdef int global_best_edges = 0 
     cdef GraphSubgraph graph
     cdef GraphSubgraph region_graph 
     cdef vector[int] selected_region
     cdef int target_region_size
     cdef int i
     cdef double start_time, best_time
+
+    # set fixed clique size optimize edges
+    if fixed_k:
+        k = fixed_k
+    else: # or expand clique based on required edges
+        k = 1
 
     # set random seed
     srand(seed)
@@ -78,20 +85,16 @@ cpdef tuple CORE(dict adj_dict, double gamma, int no_improve_limit, int max_iter
         
         # Fill candidates after initial solution        
         no_improve_iter = 0
-        best_edges_for_k = graph.edges_subgraph
+        restart_best_edges = graph.edges_subgraph
         
         while no_improve_iter < no_improve_limit and global_iter < max_iterations:
         
             # check for valid quasi clique and expand
-            if graph.edges_subgraph >= required_edges:
+            if graph.edges_subgraph >= required_edges and not fixed_k:
                 best_time = time()
                 print(f"Found clique of size {k} with {graph.edges_subgraph} edges, Iteration: {global_iter}, Time: {best_time - start_time:.4f}s", end="\r")
                 
-                # Clear previous solution and collect new one
-                #best_solution.clear()
-                #for i in range(graph.S_size):
-                #    best_solution.append(graph.nodes[i])
-                
+                # expand current clique
                 k += 1
                 required_edges = <int>ceil(gamma * k * (k - 1) / 2 - 1e-9)
                 node_to_add = graph.select_to_add_global(global_iter)
@@ -113,8 +116,18 @@ cpdef tuple CORE(dict adj_dict, double gamma, int no_improve_limit, int max_iter
                 graph.remove_from_S(node_to_remove, global_iter)
 
             # check if number of edges improved, update iteration counts
-            if graph.edges_subgraph > best_edges_for_k:
-                best_edges_for_k = graph.edges_subgraph
+            if graph.edges_subgraph > global_best_edges:
+                global_best_edges = graph.edges_subgraph
+                best_time = time()
+                print(f"Found clique of size {k} with {graph.edges_subgraph} edges, Iteration: {global_iter}, Time: {best_time - start_time:.4f}s", end="\r")
+
+                # Clear previous solution and collect new one
+                best_solution.clear()
+                for i in range(graph.S_size):
+                    best_solution.append(graph.nodes[i])
+
+            if graph.edges_subgraph > restart_best_edges:
+                restart_best_edges = graph.edges_subgraph
                 no_improve_iter = 0
             else:
                 no_improve_iter += 1
