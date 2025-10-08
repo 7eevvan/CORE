@@ -12,13 +12,13 @@ Participants were tasked with solving the max-quasi clique problem, which is a r
 
 The minimum number of edges required for a quasi-clique is defined as:
 
-**γ · [k · (k - 1) / 2]**
+$$\gamma \cdot \frac{k \cdot (k - 1)}{2}$$
 
 where `k` is the number of nodes in the subgraph and `γ` is the density threshold.
 
 The specific goal of this challenge was to extract up to 12 large quasi-cliques, one for each density level:
 
-**γᵢ = 1/2ⁱ, i = 0,1,...,11**
+$$\gamma_i = \frac{1}{2^i}, \quad i = 0,1,...,11$$
 
 This creates density thresholds ranging from 1.0 (fully connected clique) down to approximately 0.0005 (very sparse quasi-cliques).
 
