@@ -1,6 +1,6 @@
 # CORE Algorithm
 
-I developed the **Clique Optimization with Region Exploration (CORE)** algorithm for finding maximum quasi-cliques. This algorithm finished **1st place** in the [FlyWire Max Quasi-Clique Challenge](https://codex.flywire.ai/app/max_clique_challenge). This challenge involved finding 12 quasi-cliques with different densities, with the lowest densities much sparser than what current algorithms are designed to handle. The CORE algorithm introduces an exploration mechanism called Region Exploration, which explores groups of well-connected nodes together, allowing it to discover regions where individual nodes may appear suboptimal but collectively contribute to better overall solutions.
+I developed the **Clique Optimization with Region Exploration (CORE)** algorithm for finding maximum quasi-cliques. This algorithm finished **1st place** in the [Princeton FlyWire Max Quasi-Clique Challenge](https://codex.flywire.ai/app/max_clique_challenge). This challenge involved finding 12 quasi-cliques with different densities, with the lowest densities much sparser than what current algorithms are designed to handle. The CORE algorithm introduces an exploration mechanism called Region Exploration, which explores groups of well-connected nodes together, allowing it to discover regions where individual nodes may appear suboptimal but collectively contribute to better overall solutions.
 
 ## The Challenge
 
