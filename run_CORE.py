@@ -48,43 +48,22 @@ if __name__ == "__main__":
 
 	original_clique = [reverse_map[node] for node in best_clique]
 
-	print(original_clique)
 	print(f"\nFound solution with {len(original_clique)} vertices in {best_time:.4f} seconds")
 	print(f"Total time: {total_time:.4f} seconds")
 
-	# test gammas
-	res = []
-	gammas = [0.0625, 0.125, 0.25, 0.5, 1]
-	for gamma in gammas:
-		print("Running gamma: " + str(gamma))
-		
-		start_time = time.time()
-		best_clique, best_time = CORE(
-			adj_dict,
-			gamma=gamma,
-			no_improve_limit=args.no_improve_limit,
-        	max_iterations=args.max_iterations,
-        	region_freq=args.region_freq,
-        	min_region_size=args.min_region_size,
-        	max_region_size=args.max_region_size,
-        	seed=args.seed,
-        	fixed_k=args.fixed_k
-    	)
-		total_time = time.time() - start_time
+	# compute density of the solution
+	solution_set = set(best_clique)
+	edge_count = 0
+	for u in best_clique:
+		for v in adj_dict[u]:
+			if v in solution_set:
+				edge_count += 1
+	edge_count //= 2
 
-		# compute density of the solution
-		solution_set = set(best_clique)
-		edge_count = 0
-		for u in best_clique:
-			for v in adj_dict[u]:
-				if v in solution_set:
-					edge_count += 1
-		edge_count //= 2
-
-		k = len(best_clique)
-		possible_edges = k * (k-1) / 2
-		density = edge_count / possible_edges if possible_edges else 0
-		print(density)
+	k = len(best_clique)
+	possible_edges = k * (k-1) / 2
+	density = edge_count / possible_edges if possible_edges else 0
+	print(f"Density: {density}")
 
 		
 
