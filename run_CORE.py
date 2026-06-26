@@ -2,6 +2,8 @@ from CORE import CORE
 from load_data import remap_to_dense
 import time
 import argparse
+VERBOSE = 0
+
 
 def load_graph(path):
     adj = {}
@@ -46,10 +48,10 @@ if __name__ == "__main__":
 
 	total_time = time.time() - start_time
 
-	original_clique = [reverse_map[node] for node in best_clique]
-
-	print(f"\nFound solution with {len(original_clique)} vertices in {best_time:.4f} seconds")
-	print(f"Total time: {total_time:.4f} seconds")
+	# original_clique = [reverse_map[node] for node in best_clique]
+	if VERBOSE:
+		print(f"\nFound solution with {len(original_clique)} vertices in {best_time:.4f} seconds")
+		print(f"Total time: {total_time:.4f} seconds")
 
 	# compute density of the solution
 	solution_set = set(best_clique)
@@ -63,7 +65,8 @@ if __name__ == "__main__":
 	k = len(best_clique)
 	possible_edges = k * (k-1) / 2
 	density = edge_count / possible_edges if possible_edges else 0
-	print(f"Density: {density}")
+	print()
+	print(f"Density = {density}")
 
 		
 
