@@ -20,11 +20,11 @@ if __name__ == "__main__":
 	parser.add_argument("graph", help="Path to graph file")
 	parser.add_argument("--gamma", type=float, default=0.25)
 	parser.add_argument("--no_improve_limit", type=int, default=100)
-	parser.add_argument("--max_iterations", type=float, default=1e5)
+	parser.add_argument("--max_iterations", type=float, default=10000)
 	parser.add_argument("--region_freq", type=int, default=10)
 	parser.add_argument("--min_region_size", type=int, default=10)
 	parser.add_argument("--max_region_size", type=int, default=200)
-	parser.add_argument("--seed", type=int, default=123)
+	parser.add_argument("--seed", type=int, default=67)
 	parser.add_argument("--fixed_k", type=int, default=36)
 	args = parser.parse_args()
 
