@@ -12,9 +12,23 @@ with open("test.txt") as f:
 			gammas.append(float(line[8:]))
 			if best_size != 0:
 				sizes.append(best_size)
-		if line.startswith("Found solution with "):
-			print(line.split())
-			best_size = int(line.split()[3])
+		if line.startswith("Found clique of size "):
+			best_size = int(line.split()[4])
 sizes.append(best_size)
 
-print(gammas, sizes)
+
+x = np.array(gammas)
+y = np.array(sizes)
+
+plt.scatter(x, y)
+plt.xlabel("Gamma")
+plt.ylabel("Clique Size")
+plt.title("Gamma vs Clique Size")
+plt.grid(True)
+
+m, b = np.polyfit(x, y, 1)
+y_fit = m * x + b
+
+plt.plot(x, y_fit)
+
+plt.savefig("gamma_cliquesize.png", dpi=300, bbox_inches="tight")
