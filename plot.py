@@ -26,4 +26,9 @@ plt.ylabel("Clique Size")
 plt.title("Gamma vs Clique Size")
 plt.grid(True)
 
+coeffs = np.polyfit(x, y, 2)
+x_fit = np.linspace(x.min(), x.max(), 200)
+y_fit = np.polyval(coeffs, x_fit)
+plt.plot(x_fit, y_fit)
+
 plt.savefig("gamma_cliquesize.png", dpi=300, bbox_inches="tight")
